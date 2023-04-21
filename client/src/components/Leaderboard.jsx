@@ -3,21 +3,20 @@ import { useState, useEffect } from 'react'
 import './Leaderboard.css'
 import io from 'socket.io-client';
 
-function Leaderboard() {
+function Leaderboard(props) {
+  const { socket } = props;
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    const socket = io('http://localhost:8080');
-
     socket.on('leaderboard-update', (data) => {
       setUsers(data);
       console.log(users);
     });
 
     return () => {
-      socket.disconnect();
+      socket.off('leaderboard-update');
     };
-  }, []);
+  }, [socket]);
 
   users.sort((a, b) => b.score - a.score);
 

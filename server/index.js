@@ -14,7 +14,10 @@ const io = new Server(server, {
     },
 });
 
+let buzzed = null;
 let users = [];
+let questions = "For 10 points, name the inspirational youtuber that posts youtube skits with deep meanings.";
+let answer = "Dhar Mann";
 
 io.on('connection', (socket) => {
     console.log(`User ${socket.id} connected`);
@@ -22,12 +25,12 @@ io.on('connection', (socket) => {
     users.push({
         id: socket.id,
         team: 'spectator',
-        score: Math.random(),
+        score: 0,
         name: `User ${socket.id}`
     });
 
     console.log(users);
-    io.sockets.emit("leaderboard-update", users);
+    io.emit("leaderboard-update", users);
 
     socket.on('disconnect', () => {
         console.log(`User ${socket.id} disconnected`);
@@ -36,6 +39,16 @@ io.on('connection', (socket) => {
         console.log(users);
 
         io.sockets.emit("leaderboard-update", users);
+    });
+
+    socket.on('buzz', () => {
+        buzzed = socket.id
+        socket.broadcast.emit('lock-buzzer')
+    });
+
+    socket.on('answer', (answer) => {
+        console.log(answer)
+        socket.broadcast.emit('unlock-buzzer')
     });
 });
 
