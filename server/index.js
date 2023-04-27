@@ -11,6 +11,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
       origin: 'http://localhost:5173',
+      methods: ["GET", "POST"]
     },
 });
 
@@ -24,7 +25,6 @@ io.on('connection', (socket) => {
 
     users.push({
         id: socket.id,
-        team: 'spectator',
         score: 0,
         name: `User ${socket.id}`
     });
@@ -42,12 +42,14 @@ io.on('connection', (socket) => {
     });
 
     socket.on('buzz', () => {
-        buzzed = socket.id
-        socket.broadcast.emit('lock-buzzer')
+        buzzed = socket.id;
+        console.log(buzzed);
+        socket.broadcast.emit('lock-buzzer');
     });
 
     socket.on('answer', (answer) => {
         console.log(answer)
+        console.log(socket.id)
         socket.broadcast.emit('unlock-buzzer')
     });
 });

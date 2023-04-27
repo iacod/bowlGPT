@@ -31,7 +31,6 @@ function Buzzer(props) {
           socket.emit('answer', inputRef.current.value);
         }
         setShowPopup(false);
-        setIsActive(true);
       }
   
       return () => clearInterval(intervalId);
